@@ -1,0 +1,350 @@
+1)
+SELECT 
+    DEPT_CODE,
+    MIN(BASIC) AS MIN_BASIC,
+    MAX(BASIC) AS MAX_BASIC,
+    AVG(BASIC) AS AVG_BASIC
+FROM 
+    EMPLOYEE_32
+GROUP BY 
+    DEPT_CODE;
+
+
+
+DEPT_CODE         MIN_BASIC  MAX_BASIC  AVG_BASIC
+---------------- ---------- ---------- ----------
+Dep1                  76000      76000      76000
+Dep3                  86000      86000      86000
+Dep5                  80000      80000      80000
+Dep4                  70000      70000      70000
+Dep2                  90000      90000      90000
+
+
+
+2)    
+
+SELECT DEPT_CODE,
+    COUNT(*) AS NUM_FEMALE_EMPLOYEES
+FROM 
+    EMPLOYEE_32
+WHERE 
+    SEX = 'F'
+GROUP BY 
+    DEPT_CODE;
+
+
+
+DEPT_CODE        NUM_FEMALE_EMPLOYEES
+---------------- --------------------
+Dep3                                1
+Dep4                                1
+Dep2                                1
+
+
+3)
+SELECT 
+    DEPT_CODE,
+    CITY,
+    COUNT(*) AS NUM_EMPLOYEES
+FROM 
+    EMPLOYEE_32
+GROUP BY 
+    DEPT_CODE, CITY;
+
+
+
+DEPT_CODE        CITY                 NUM_EMPLOYEES
+---------------- -------------------- -------------
+Dep5             Kolkata                          1
+Dep1             Kolkata                          1
+Dep3             Kolkata                          1
+Dep4             Behrampore                       1
+Dep2             Kolkata                          1
+
+
+
+4)
+
+
+inserting a row with employee join date in year 2000
+
+insert into Employee_32 values('E6','Arun Kar','Dep4','Des1','M','Goregaon','Mumbai',
+'Maharashtra','511302',86000,to_date('10:10:2000','dd:mm:yyyy'));
+
+SELECT 
+    DEPT_CODE,
+    DESIG_CODE,
+    COUNT(*) AS NUM_EMPLOYEES
+FROM 
+    EMPLOYEE_32
+WHERE 
+    EXTRACT(YEAR FROM JN_DT) = 2000
+GROUP BY 
+    DEPT_CODE, DESIG_CODE
+ORDER BY 
+    NUM_EMPLOYEES ASC;
+
+
+
+
+DEPT_CODE        DESIG_CODE       NUM_EMPLOYEES
+---------------- ---------------- -------------
+Dep4             Des1                         1
+
+
+5)
+
+SELECT 
+    DEPT_CODE,
+    SUM(BASIC) AS TOTAL_BASIC
+FROM 
+    EMPLOYEE_32
+WHERE 
+    SEX = 'M'
+GROUP BY 
+    DEPT_CODE
+HAVING 
+    SUM(BASIC) > 50000
+ORDER BY 
+    TOTAL_BASIC DESC;
+
+
+
+DEPT_CODE        TOTAL_BASIC
+---------------- -----------
+Dep4                   86000
+Dep5                   80000
+Dep1                   76000
+
+
+6)
+ SELECT 
+     EMPLOYEE_32.EMP_NAME,
+     DESIGNATION.DESIG_NAME AS DESIGNATION_NAME,
+     EMPLOYEE_32.BASIC
+ FROM 
+     EMPLOYEE_32
+ JOIN 
+     DESIGNATION ON EMPLOYEE_32.DESIG_CODE = DESIGNATION.DESIG_CODE;
+
+
+
+EMP_NAME             DESIGNATION_NAME          BASIC
+-------------------- -------------------- ----------
+Arunima Karmakar     Manager                   86000
+Manideepa Shaw       Officer                   90000
+Soumik Mondal        Manager                   80000
+Adin Shahab          Manager                   70000
+Bikram Halder        Clerk                     76000
+Arun Kar             Manager                   86000
+
+7)
+
+SELECT 
+    EMPLOYEE_32.EMP_NAME,
+    DESIGNATION.DESIG_NAME AS DESIGNATION_DESCRIPTION,
+    DEPARTMENT.DEPT_NAME,
+    EMPLOYEE_32.BASIC
+FROM 
+    EMPLOYEE_32
+JOIN 
+    DESIGNATION ON EMPLOYEE_32.DESIG_CODE = DESIGNATION.DESIG_CODE
+JOIN 
+    DEPARTMENT ON EMPLOYEE_32.DEPT_CODE = DEPARTMENT.DEPT_CODE;
+
+
+
+EMP_NAME             DESIGNATION_DESCRIPT DEPT_NAME                 BASIC
+-------------------- -------------------- -------------------- ----------
+Arunima Karmakar     Manager              Purchase                  86000
+Manideepa Shaw       Officer              Production                90000
+Soumik Mondal        Manager              Research                  80000
+Adin Shahab          Manager              Finance                   70000
+Bikram Halder        Clerk                Personnel                 76000
+Arun Kar             Manager              Finance                   86000
+
+
+8)
+
+// updating an employee data and setting his dept code as null for the question
+
+UPDATE Employee_32
+SET DEPT_CODE = NULL
+WHERE emp_code ='E5';
+
+
+
+SELECT 
+    DEPARTMENT.DEPT_CODE
+FROM 
+    DEPARTMENT
+LEFT JOIN 
+    EMPLOYEE_32 ON DEPARTMENT.DEPT_CODE = EMPLOYEE_32.DEPT_CODE
+WHERE 
+    EMPLOYEE_32.DEPT_CODE IS NULL;
+
+
+
+DEPT_CODE
+----------------
+Dep1
+
+
+
+9)
+
+SELECT DISTINCT
+    DEPARTMENT.DEPT_NAME
+FROM 
+    DEPARTMENT
+INNER JOIN 
+    EMPLOYEE_32 ON DEPARTMENT.DEPT_CODE = EMPLOYEE_32.DEPT_CODE;
+
+
+
+DEPT_NAME
+--------------------
+Production
+Finance
+Research
+Purchase
+
+
+10)
+
+// inserting two employees with dept code Dep2 to make count of Dep2 employees 3 till now
+
+
+insert into Employee_32 values('E7','Biki H','Dep2','Des4','M','Howrah','Kolkata','West Bengal','711002',76000,to_date('6:5:2008','dd:mm:yyyy'));
+insert into Employee_32 values('E8','Luna Hill','Dep2','Des5','2','Howrah','Kolkata','West Bengal','711602',76000,to_date('3:5:2005','dd:mm:yyyy'));
+
+
+
+
+SELECT 
+    DEPARTMENT.DEPT_NAME
+FROM 
+    DEPARTMENT
+WHERE DEPT_CODE in(
+SELECT DEPT_CODE FROM EMPLOYEE_32
+HAVING COUNT(*)>2
+GROUP BY DEPT_CODE);
+
+
+
+
+DEPT_NAME
+--------------------
+Production
+
+
+
+11)
+
+SELECT 
+    DEPT_CODE
+FROM 
+    EMPLOYEE_32
+WHERE 
+    BASIC = (SELECT MAX(BASIC) FROM EMPLOYEE_32);
+
+
+
+
+DEPT_CODE
+----------------
+Dep2
+
+
+
+12)
+
+SELECT 
+    DESIGNATION.DESIG_NAME AS DESIG_NAME
+FROM 
+    EMPLOYEE_32
+JOIN 
+    DESIGNATION ON EMPLOYEE_32.DESIG_CODE = DESIGNATION.DESIG_CODE
+WHERE 
+    BASIC = (SELECT MAX(BASIC) FROM EMPLOYEE_32);
+
+
+
+DESIG_NAME
+--------------------
+Officer
+
+
+
+13)
+
+SELECT 
+    DEPT_CODE,
+    COUNT(*) AS NUM_MANAGERS
+FROM 
+    EMPLOYEE_32
+WHERE 
+    DESIG_CODE = 'Des1'
+GROUP BY 
+    DEPT_CODE;
+
+
+
+DEPT_CODE        NUM_MANAGERS
+---------------- ------------
+Dep3                        1
+Dep5                        1
+Dep4                        2
+
+
+14)
+
+SELECT BASIC
+FROM EMPLOYEE_32
+ORDER BY BASIC DESC
+LIMIT 1;
+
+
+or
+
+SELECT BASIC
+FROM EMPLOYEE_32
+ORDER BY BASIC DESC
+FETCH FIRST 1 ROW ONLY;
+
+or
+ SELECT BASIC AS "MAX_BASIC" FROM     //correct
+ (
+ SELECT BASIC FROM EMPLOYEE_32
+ WHERE BASIC IS NOT NULL
+ ORDER BY BASIC DESC
+ )
+ WHERE ROWNUM=1;
+
+
+
+ MAX_BASIC
+----------
+     90000
+
+
+15)
+ SELECT BASIC AS "MIN_BASIC" FROM    
+ (
+ SELECT BASIC FROM EMPLOYEE_32
+ WHERE BASIC IS NOT NULL
+ ORDER BY BASIC
+ )
+ WHERE ROWNUM=1;
+
+
+
+
+ MIN_BASIC
+----------
+     70000
+
+16)
+
+
+

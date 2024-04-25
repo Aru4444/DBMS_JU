@@ -1,0 +1,177 @@
+1)
+create table EMPLOYEE_32(
+EMP_CODE char(16),
+EMP_NAME char(20),
+DEPT_CODE char(16),
+DESIG_CODE char(16),
+SEX char(1),
+ADDRESS char(25),
+CITY char(20),
+STATE char(20),
+PIN char(6),
+BASIC integer,
+JN_DT Date,
+Primary key(EMP_CODE)
+);
+
+desc employee_32;
+
+create table DESIGNATION(
+DESIG_CODE char(16),
+DESIG_NAME char(20),
+Primary key(DESIG_CODE)
+);
+
+create table DEPARTMENT(
+DEPT_CODE char(16),
+DEPT_NAME char(20),
+Primary key(DEPT_CODE)
+);
+
+2)
+desc employee_32;
+desc DESIGNATION;
+desc DEPARTMENT ;
+
+
+*******************************************************
+ alter table employee_32
+ add foreign key(DEPT_CODE) references DEPARTMENT(DEPT_CODE);
+
+
+ alter table employee_32
+ add foreign key(DESIG_CODE) references DESIGNATION(DESIG_CODE);
+***********************************************************************
+
+
+
+3)
+insert into designation values('Des1','Manager');
+ insert into designation values('Des2','Executive');
+
+ insert into designation values('Des3','Officer');
+
+ insert into designation values('Des4','Clerk');
+ insert into designation values('Des5','Helper');
+
+
+
+
+ insert into department values('Dep1','Personnel');
+
+ insert into department values('Dep2','Production');
+
+ insert into department values('Dep3','Purchase');
+
+ insert into department values('Dep4','Finance');
+
+ insert into department values('Dep5','Research');
+
+
+
+insert into Employee_32 values('E1','Arunima Karmakar','Dep3','Des1','F','Howrah','Kolkata','West Bengal','711302',86000,to_date('10:10:2010','dd:mm:yyyy'));
+insert into Employee_32 values('E2','Manideepa Shaw','Dep2','Des3','F','Bhawanipore','Kolkata','West Bengal','700008',90000,to_date('15:7:2009','dd:mm:yyyy'));
+insert into Employee_32 values('E3','Soumik Mondal','Dep5','Des1','M','Dum Dum','Kolkata','West Bengal','700002',80000,to_date('11:12:2008','dd:mm:yyyy'));
+insert into Employee_32 values('E4','Adin Shahab','Dep4','Des1','F','Alipur','Behrampore','West Bengal','742101',70000,to_date('4:1:2010','dd:mm:yyyy'));
+insert into Employee_32 values('E5','Bikram Halder','Dep1','Des4','M','Howrah','Kolkata','West Bengal','711112',76000,to_date('6:5:2007','dd:mm:yyyy'));
+
+4)
+insert into Employee_32(emp_code,emp_name,desig_code,sex,address,city,state,pin,jn_dt) values('E7','William Joans','Des2','M','Mahatma Gandhi Road','Mumbai','Maharashra','100002',to_date('6:5:2007','dd:mm:yyyy'));
+insert into Employee_32(emp_code,emp_name,desig_code,sex,address,city,state,pin,jn_dt) values('E8','Alexis Hill','Des1','F','Shakespeare Road','Mumbai','Maharashra','100002',to_date('15:7:2009','dd:mm:yyyy'));
+
+
+5)
+select * from EMPLOYEE_32 where dept_code is null;
+
+6)
+select * from EMPLOYEE_32 where basic=0;
+
+7)
+
+select * from EMPLOYEE_32 where basic is null;
+
+8)
+select avg(basic) from EMPLOYEE_32;
+
+AVG(BASIC)
+----------
+     80400
+
+
+9)
+update EMPLOYEE_32 set basic=0 where basic is null;
+
+10)select avg(basic) from EMPLOYEE_32;
+
+
+AVG(BASIC)
+----------
+57428.5714
+
+11)
+delete from EMPLOYEE_32 where DEPT_CODE is null;
+
+12)
+select EMP_NAME,(basic+(basic*0.4)+basic*0.5) from EMPLOYEE_32;
+
+EMP_NAME             (BASIC+(BASIC*0.4)+BASIC*0.5)
+-------------------- -----------------------------
+Arunima Karmakar                            163400
+Manideepa Shaw                              171000
+Soumik Mondal                               152000
+Adin Shahab                                 133000
+Bikram Halder                               144400
+
+
+13)
+SELECT UPPER(EMP_NAME) AS EMPLOYEE_NAME, BASIC FROM EMPLOYEE_32 ORDER BY DEPT_CODE ASC;
+
+
+EMPLOYEE_NAME             BASIC
+-------------------- ----------
+BIKRAM HALDER             76000
+MANIDEEPA SHAW            90000
+ARUNIMA KARMAKAR          86000
+ADIN SHAHAB               70000
+SOUMIK MONDAL             80000
+
+
+14)
+select * from EMPLOYEE_32 where  jn_dt>to_date('01:01:2010','dd:mm:yyyy');
+
+15)
+SELECT COUNT(*) FROM EMPLOYEE_32 WHERE TO_CHAR(JN_DT, 'MM') = '01';
+
+
+COUNT(*)
+--------
+       1
+
+
+
+16)
+SELECT MAX(BASIC) AS max_basic, MIN(BASIC) AS min_basic from EMPLOYEE_32;
+
+
+ MAX_BASIC  MIN_BASIC
+---------- ----------
+     90000      70000
+
+
+17)
+SELECT COUNT(*) FROM EMPLOYEE_32 WHERE SEX='F';
+
+
+ COUNT(*)
+---------
+        3
+
+18)
+SELECT UPPER(CITY) AS CITY FROM EMPLOYEE_32;
+
+19)
+SELECT COUNT(DISTINCT CITY) AS num_cityes FROM EMPLOYEE_32;
+
+
+20)
+SELECT * FROM EMPLOYEE_32 ORDER BY DEPT_CODE ASC, BASIC DESC;
